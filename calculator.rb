@@ -5,7 +5,9 @@ signs = arguments.select.with_index { |_, sign| sign.odd? }
 
 case signs.first
 when "+"
-puts numbers.reduce { |sum, num| sum + num  }
+  puts numbers.reduce { |sum, num| sum + num  }
+when "-"
+  puts numbers.reduce { |substraction, num| substraction - num }
 else
-puts numbers.reduce { |substraction, num| substraction - num }
+  puts "Please, enter + or -"
 end
