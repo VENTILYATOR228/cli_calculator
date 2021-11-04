@@ -1,7 +1,7 @@
 input = gets.chomp
 arguments = input.scan(/\S+/)
-numbers = arguments.select.with_index { |_, num| num.even? }.map(&:to_i)
-signs = arguments.select.with_index { |_, sign| sign.odd? }
+numbers = arguments.select.with_index { |_, ind| ind.even? }.map(&:to_i)
+signs = arguments.select.with_index { |_, ind| ind.odd? }
 
 case signs.first
 when "+"
