@@ -1,13 +1,11 @@
-def sum(first_num, second_num)
-  first_num + second_num
+input = gets.chomp
+arguments = input.scan(/\S+/)
+numbers = arguments.select.with_index { |_, num| num.even? }.map(&:to_i)
+signs = arguments.select.with_index { |_, sign| sign.odd? }
+
+case signs.first
+when "+"
+puts numbers.reduce { |sum, num| sum + num  }
+else
+puts numbers.reduce { |substraction, num| substraction - num }
 end
-
-def substract (first_num, second_num)
-  first_num - second_num
-end
-
-first_number = gets.chomp.to_i
-second_number = gets.chomp.to_i
-
-puts "The sum is #{ sum(first_number, second_number) }"
-puts "The substraction is #{ substract(first_number, second_number) }"
