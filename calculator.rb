@@ -1,5 +1,5 @@
 def split_string_in_array_to_array(input)
-  string = input.reduce { |string, item| resut + " " + item }
+  string = input.reduce { |string, item| string + " " + item }
   string.scan(/\S+/)
 end
 
