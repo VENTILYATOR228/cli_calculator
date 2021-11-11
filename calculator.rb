@@ -1,49 +1,34 @@
-def split_string_in_array_to_array(input)
-  string = input.reduce { |string, item| string + item }
-  string.scan(/(\d+|\+|\-)/).flatten
-end
+SIGNS = %w[+ -].freeze
 
-def split_string_to_array(input)
+def split_problem(input)
   input.scan(/(\d+|\+|\-)/).flatten
 end
 
-def split_array_or_string(input)
-  case input
-  when Array
-    split_string_in_array_to_array(input)
-  when String
-    split_string_to_array(input)
+def eval_math(a, sign, b)
+  case sign
+  when "+"
+    a + b
+  when "-"
+    a - b
   end
 end
 
-def eval_math(input)
+def solve_problem(problem)
+  problem_arr = split_problem(problem)
   sign = nil
-  arguments = split_array_or_string(input)
-  result = arguments.reduce do |result, item|
-    result = result.to_i
-    if item != "+" && item != "-"
+  problem_arr.reduce do |result, item|
+    result = result.to_i if sign.nil?
+    unless SIGNS.include? item
       item = item.to_i
     end
     case item
-    when String
-      if item == "+"
-        sign = "+"
-      elsif item == "-"
-        sign = "-"
-      end
+    when *SIGNS
+      sign = item
     when Integer
-      if sign == "+"
-        result = result + item
-      elsif sign == "-"
-        result = result - item
-      end
+      result = eval_math(result, sign, item)
     end
     result
   end
 end
 
-print "#{split_string_in_array_to_array(ARGV)}\n"
-puts  eval_math(ARGV)
-string = "14 - 43 + 21 - 4"
-print "#{split_string_to_array(string)}\n"
-puts eval_math(string)
+puts  solve_problem(ARGV.join)
