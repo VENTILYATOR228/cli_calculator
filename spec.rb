@@ -2,46 +2,58 @@ require "test/unit"
 require_relative './calculator'
 
 class Spec < Test::Unit::TestCase
+
+  def call_solve_problem(array)
+    result = array[0]
+    problem = array[1]
+    assert_equal(result, solve_problem(problem))
+  end
+
   def test_solve_problem
-    assert_equal(2, solve_problem("1+1"))
-    assert_equal(-1, solve_problem("1+1-3"))
-    assert_equal(5, solve_problem("526 + 179 - 700"))
-    assert_equal(2, solve_problem("552 - 550"))
-    assert_equal(81, solve_problem("71 + 30 - 20"))
-    assert_equal(1, solve_problem("1+1- 1"))
-    assert_equal(64, solve_problem("51 + 613 - 600"))
-    assert_equal(-2, solve_problem("1 - 5 +2"))
-    assert_equal(6, solve_problem("5 -3 +4"))
-    assert_equal(-9, solve_problem("21 - 42 + 12"))
-    assert_equal(12, solve_problem("3 - 6 -1+16"))
-    assert_equal(4, solve_problem("41 - 32 - 5"))
-    assert_equal(4, solve_problem("1+4-1"))
-    assert_equal(7, solve_problem("1+6"))
-    assert_equal(-7, solve_problem("1+ 4 - 12 "))
-    assert_equal(14, solve_problem("5 - 3 + 12"))
-    assert_equal(111, solve_problem("143 - 32"))
-    assert_equal(9, solve_problem("1+8"))
-    assert_equal(-50, solve_problem("14 - 64"))
-    assert_equal(14, solve_problem("46 - 32"))
-    assert_equal(4, solve_problem("1+1 + 2"))
-    assert_equal(-6, solve_problem("1+1-3 -5"))
-    assert_equal(4, solve_problem("526 + 179 -700-1"))
-    assert_equal(0, solve_problem("552 - 550 - 2"))
-    assert_equal(51, solve_problem("71 - 20 "))
-    assert_equal(0, solve_problem("1- 1"))
-    assert_equal(604, solve_problem("51 + 613 - 60"))
-    assert_equal(1, solve_problem("1+3 - 5 +2"))
-    assert_equal(7, solve_problem("5+1 -3 +4"))
-    assert_equal(-10, solve_problem("21 -1- 42 + 12"))
-    assert_equal(21, solve_problem("3 -3+ 6 -1+16"))
-    assert_equal(67, solve_problem("41 -1+ 32 - 5"))
-    assert_equal(9, solve_problem("1+4-1 + 5"))
-    assert_equal(0, solve_problem("1+6 - 7"))
-    assert_equal(14, solve_problem("1+ 4 -3 + 12 "))
-    assert_equal(12, solve_problem("5 - 3 + 12 - 2"))
-    assert_equal(100, solve_problem("143 - 32 - 11"))
-    assert_equal(2, solve_problem("1+8 - 7"))
-    assert_equal(0, solve_problem("14 - 64 + 50"))
-    assert_equal(10, solve_problem("46 - 32 - 4"))
+    problems = [
+                [2, "1+1"],
+                [-1, "1+1-3"],
+                [5, "526 + 179 - 700"],
+                [2, "552 - 550"],
+                [81, "71 + 30 - 20"],
+                [1, "1+1- 1"],
+                [64, "51 + 613 - 600"],
+                [-2, "1 - 5 +2"],
+                [6, "5 -3 +4"],
+                [-9, "21 - 42 + 12"],
+                [12, "3 - 6 -1+16"],
+                [4, "41 - 32 - 5"],
+                [4, "1+4-1"],
+                [7, "1+6"],
+                [-7, "1+ 4 - 12 "],
+                [14, "5 - 3 + 12"],
+                [111, "143 - 32"],
+                [9, "1+8"],
+                [-50, "14 - 64"],
+                [14, "46 - 32"],
+                [4, "1+1 + 2"],
+                [-6, "1+1-3 -5"],
+                [4, "526 + 179 -700-1"],
+                [0, "552 - 550 - 2"],
+                [51, "71 - 20 "],
+                [0, "1- 1"],
+                [604, "51 + 613 - 60"],
+                [1, "1+3 - 5 +2"],
+                [7, "5+1 -3 +4"],
+                [-10, "21 -1- 42 + 12"],
+                [21, "3 -3+ 6 -1+16"],
+                [67, "41 -1+ 32 - 5"],
+                [9, "1+4-1 + 5"],
+                [0, "1+6 - 7"],
+                [14, "1+ 4 -3 + 12 "],
+                [12, "5 - 3 + 12 - 2"],
+                [100, "143 - 32 - 11"],
+                [2, "1+8 - 7"],
+                [0, "14 - 64 + 50"],
+                [10, "46 - 32 - 4"],
+               ]
+    problems.each do |item|
+      call_solve_problem(item)
+    end
   end
 end
