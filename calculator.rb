@@ -1,85 +1,89 @@
-SIGNS = %w[+ - * /].freeze
-STOP = "stop"
-BPN_SIGNS = %w[+ - * / ( ) stop].freeze
+# frozen_string_literal: true
+class BackPolishNitation
 
-def split_problem(input)
-  input.scan(/(\d+|\+|\-|\*|\/|\(|\))/).flatten
-end
+  SIGNS = %w[+ - * /].freeze
+  STOP = 'stop'
+  BPN_SIGNS = %w[+ - * / ( ) stop].freeze
 
-def search_for_instruction(item)
-  horisontal = ["stop", "+", "-", "*", "/", "(", ")"]
-  vertical = ["stop", "+", "-", "*", "/", "("]
-  interaction_matrix = [
-                        [4, 1, 1, 1, 1, 1, 5],
-                        [2, 2, 2, 1, 1, 1, 2],
-                        [2, 2, 2, 1, 1, 1, 2],
-                        [2, 2, 2, 2, 2, 1, 2],
-                        [2, 2, 2, 2, 2, 1, 2],
-                        [5, 1, 1, 1, 1, 1, 3]
-                      ]
-  vert_index = vertical.find_index(@temp.last)
-  hor_index = horisontal.find_index(item)
-  interaction_matrix[vert_index][hor_index]
-end
-
-def to_back_polish_notation(input)
-  @temp = []
-  result = []
-  problem = split_problem(input)
-  problem.push(STOP)
-  @temp.push(STOP)
-  until problem.empty?
-    if (BPN_SIGNS.include? problem.first) == false
-      result.push(problem.shift)
+  def solve_problem(input)
+    polish_problem_arr = to_back_polish_notation(input)
+    sign = nil
+    polish_problem_arr.each do |item|
+      item = item.to_i unless SIGNS.include? item
+      case item
+      when Integer
+        @stack_helper.push(item)
+      when *SIGNS
+        sign = item
+        eval_result = eval_math(@stack_helper.pop, sign, @stack_helper.pop)
+        @stack_helper.push(eval_result)
+      end
     end
-    case search_for_instruction(problem.first)
-    when 1
-      @temp.push(problem.shift)
-    when 2
-      result.push(@temp.pop)
-    when 3
-      problem.shift
-      @temp.pop
-    when 4
-      problem.shift
-      @temp.shift
-      return result
-    when 5
-      return "Syntax error"
+    puts @stack_helper.first
+  end
+
+  private
+
+  def split_problem(input)
+    input.scan(/(^\-\d+|\d+|\+|\-|\*|\/|\(|\))/).flatten
+  end
+
+  def eval_math(b, sign, a)
+    case sign
+    when '+'
+      a + b
+    when '-'
+      a - b
+    when '/'
+      a / b
+    when '*'
+      a * b
     end
   end
-end
 
-def eval_math(b, sign, a)
-  case sign
-  when "+"
-    a + b
-  when "-"
-    a - b
-  when "/"
-    a / b
-  when "*"
-    a * b
+  def search_for_instruction(item)
+    horisontal = ['stop', '+', '-', '*', '/', '(', ')']
+    vertical = ['stop', '+', '-', '*', '/', '(']
+    interaction_matrix = [
+      [4, 1, 1, 1, 1, 1, 5],
+      [2, 2, 2, 1, 1, 1, 2],
+      [2, 2, 2, 1, 1, 1, 2],
+      [2, 2, 2, 2, 2, 1, 2],
+      [2, 2, 2, 2, 2, 1, 2],
+      [5, 1, 1, 1, 1, 1, 3]
+    ]
+    vert_index = vertical.find_index(@stack_helper.last)
+    hor_index = horisontal.find_index(item)
+    interaction_matrix[vert_index][hor_index]
   end
-end
 
-def solve_problem(input)
-  polish_problem_arr = to_back_polish_notation(input)
-  sign = nil
-  polish_problem_arr.each do |item|
-    unless SIGNS.include? item
-      item = item.to_i
-    end
-    case item
-    when Integer
-      @temp.push(item)
-    when *SIGNS
-      sign = item
-      eval_result = eval_math(@temp.pop, sign, @temp.pop)
-      @temp.push(eval_result)
+  def to_back_polish_notation(input)
+    @stack_helper = []
+    result = []
+    problem = split_problem(input)
+    problem.push(STOP)
+    @stack_helper.push(STOP)
+    until problem.empty?
+      result.push(problem.shift) unless BPN_SIGNS.include? problem.first
+      case search_for_instruction(problem.first)
+      when 1
+        @stack_helper.push(problem.shift)
+      when 2
+        result.push(@stack_helper.pop)
+      when 3
+        problem.shift
+        @stack_helper.pop
+      when 4
+        problem.shift
+        @stack_helper.shift
+        return result
+      when 5
+        return 'Syntax error'
+      end
     end
   end
-  puts @temp.first
+
 end
 
-puts solve_problem(ARGV.join)
+math_problem = BackPolishNitation.new
+print math_problem.solve_problem(ARGV.join)
