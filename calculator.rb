@@ -6,7 +6,7 @@ class Calculator
   end
 
   def values
-    @values ||= solve_problem
+    @values ||= to_back_polish_notation
   end
 
   SIGNS = %w[+ - * /].freeze
