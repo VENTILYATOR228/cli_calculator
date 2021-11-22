@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BackPolishNitation
+class Calculator
 
   def initialize(problem)
     @problem = split_problem(problem)
@@ -88,6 +88,3 @@ class BackPolishNitation
   end
 
 end
-
-math_problem = BackPolishNitation.new(ARGV.join)
-print math_problem.solve_problem
