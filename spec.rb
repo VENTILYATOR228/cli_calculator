@@ -3,10 +3,10 @@ require_relative './calculator'
 
 class Spec < Test::Unit::TestCase
   def call_solve_problem(array)
-    math_problem = BackPolishNitation.new
     result = array[0]
     problem = array[1]
-    assert_equal(result, math_problem.solve_problem(problem))
+    math_problem = Calculator.new(problem)
+    assert_equal(result, math_problem.solve_problem)
   end
 
   def test_solve_problem
