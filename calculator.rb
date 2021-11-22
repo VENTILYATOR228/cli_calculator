@@ -5,6 +5,10 @@ class Calculator
     @problem = split_problem(problem)
   end
 
+  def values
+    @values ||= solve_problem
+  end
+
   SIGNS = %w[+ - * /].freeze
   STOP = 'stop'
   BPN_SIGNS = (SIGNS + [STOP] + %w[( )]).freeze
@@ -24,6 +28,32 @@ class Calculator
       end
     end
     @stack_helper.first
+  end
+
+  def to_back_polish_notation
+    @stack_helper = []
+    result = []
+    @problem
+    @problem.push(STOP)
+    @stack_helper.push(STOP)
+    until @problem.empty?
+      result.push(@problem.shift) if !BPN_SIGNS.include? @problem.first
+      case search_for_instruction(@problem.first)
+      when 1
+        @stack_helper.push(@problem.shift)
+      when 2
+        result.push(@stack_helper.pop)
+      when 3
+        @problem.shift
+        @stack_helper.pop
+      when 4
+        @problem = result
+        @stack_helper.shift
+        return @problem
+      when 5
+        return 'Syntax error'
+      end
+    end
   end
 
   private
@@ -59,32 +89,6 @@ class Calculator
     vert_index = vertical.find_index(@stack_helper.last)
     hor_index = horisontal.find_index(item)
     interaction_matrix[vert_index][hor_index]
-  end
-
-  def to_back_polish_notation
-    @stack_helper = []
-    result = []
-    @problem
-    @problem.push(STOP)
-    @stack_helper.push(STOP)
-    until @problem.empty?
-      result.push(@problem.shift) if !BPN_SIGNS.include? @problem.first
-      case search_for_instruction(@problem.first)
-      when 1
-        @stack_helper.push(@problem.shift)
-      when 2
-        result.push(@stack_helper.pop)
-      when 3
-        @problem.shift
-        @stack_helper.pop
-      when 4
-        @problem = result
-        @stack_helper.shift
-        return @problem
-      when 5
-        return 'Syntax error'
-      end
-    end
   end
 
 end
