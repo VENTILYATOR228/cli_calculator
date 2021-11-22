@@ -13,7 +13,7 @@ class Calculator
     @problem = to_back_polish_notation
     sign = nil
     @problem.each do |item|
-      item = item.to_i unless SIGNS.include? item
+      item = item.to_i if !SIGNS.include? item
       case item
       when Integer
         @stack_helper.push(item)
