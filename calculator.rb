@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 class BackPolishNitation
 
+  def initialize(problem)
+    @problem = split_problem(problem)
+  end
+
   SIGNS = %w[+ - * /].freeze
   STOP = 'stop'
-  BPN_SIGNS = %w[+ - * / ( ) stop].freeze
+  BPN_SIGNS = (SIGNS + [STOP] + %w[( )]).freeze
 
-  def solve_problem(input)
-    polish_problem_arr = to_back_polish_notation(input)
+  def solve_problem
+    @problem = to_back_polish_notation
     sign = nil
-    polish_problem_arr.each do |item|
+    @problem.each do |item|
       item = item.to_i unless SIGNS.include? item
       case item
       when Integer
@@ -19,7 +23,7 @@ class BackPolishNitation
         @stack_helper.push(eval_result)
       end
     end
-    puts @stack_helper.first
+    @stack_helper.first
   end
 
   private
@@ -57,26 +61,26 @@ class BackPolishNitation
     interaction_matrix[vert_index][hor_index]
   end
 
-  def to_back_polish_notation(input)
+  def to_back_polish_notation
     @stack_helper = []
     result = []
-    problem = split_problem(input)
-    problem.push(STOP)
+    @problem
+    @problem.push(STOP)
     @stack_helper.push(STOP)
-    until problem.empty?
-      result.push(problem.shift) unless BPN_SIGNS.include? problem.first
-      case search_for_instruction(problem.first)
+    until @problem.empty?
+      result.push(@problem.shift) if !BPN_SIGNS.include? @problem.first
+      case search_for_instruction(@problem.first)
       when 1
-        @stack_helper.push(problem.shift)
+        @stack_helper.push(@problem.shift)
       when 2
         result.push(@stack_helper.pop)
       when 3
-        problem.shift
+        @problem.shift
         @stack_helper.pop
       when 4
-        problem.shift
+        @problem = result
         @stack_helper.shift
-        return result
+        return @problem
       when 5
         return 'Syntax error'
       end
@@ -85,5 +89,5 @@ class BackPolishNitation
 
 end
 
-math_problem = BackPolishNitation.new
-print math_problem.solve_problem(ARGV.join)
+math_problem = BackPolishNitation.new(ARGV.join)
+print math_problem.solve_problem
