@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class Calculator
 
+class Calculator
   def initialize(problem)
     @problem = split_problem(problem)
   end
@@ -17,7 +17,7 @@ class Calculator
     @problem = to_back_polish_notation
     sign = nil
     @problem.each do |item|
-      item = item.to_i if !SIGNS.include? item
+      item = item.to_i unless SIGNS.include? item
       case item
       when Integer
         @stack_helper.push(item)
@@ -33,11 +33,10 @@ class Calculator
   def to_back_polish_notation
     @stack_helper = []
     result = []
-    @problem
     @problem.push(STOP)
     @stack_helper.push(STOP)
     until @problem.empty?
-      result.push(@problem.shift) if !BPN_SIGNS.include? @problem.first
+      result.push(@problem.shift) unless BPN_SIGNS.include? @problem.first
       case search_for_instruction(@problem.first)
       when 1
         @stack_helper.push(@problem.shift)
@@ -59,19 +58,19 @@ class Calculator
   private
 
   def split_problem(input)
-    input.scan(/(^\-\d+|\d+|\+|\-|\*|\/|\(|\))/).flatten
+    input.scan(%r{(^-\d+|\d+|\+|-|\*|/|\(|\))}).flatten
   end
 
-  def eval_math(b, sign, a)
+  def eval_math(second_el, sign, first_el)
     case sign
     when '+'
-      a + b
+      first_el + second_el
     when '-'
-      a - b
+      first_el - second_el
     when '/'
-      a / b
+      first_el / second_el
     when '*'
-      a * b
+      first_el * second_el
     end
   end
 
@@ -90,5 +89,4 @@ class Calculator
     hor_index = horisontal.find_index(item)
     interaction_matrix[vert_index][hor_index]
   end
-
 end
