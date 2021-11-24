@@ -1,54 +1,54 @@
 # frozen_string_literal: true
 
 class Calculator
+  SIGNS = %w[+ - * /].freeze
+  STOP = 'stop'
+  BPN_SIGNS = ([STOP] + SIGNS + %w[( )]).freeze
+  HOR = BPN_SIGNS.freeze
+  VERT = ([STOP] + SIGNS + %w[(]).freeze
+  BPN_MATRIX = [
+    [4, 1, 1, 1, 1, 1, 5],
+    [2, 2, 2, 1, 1, 1, 2],
+    [2, 2, 2, 1, 1, 1, 2],
+    [2, 2, 2, 2, 2, 1, 2],
+    [2, 2, 2, 2, 2, 1, 2],
+    [5, 1, 1, 1, 1, 1, 3]
+  ].freeze
+
   def initialize(problem)
     @problem = split_problem(problem)
   end
 
-  def values
-    @values ||= to_back_polish_notation
-  end
-
-  SIGNS = %w[+ - * /].freeze
-  STOP = 'stop'
-  BPN_SIGNS = (SIGNS + [STOP] + %w[( )]).freeze
+  # def results_memo
+  #   @results_memo ||= back_polish_notation
+  # end
 
   def solve_problem
-    @problem = to_back_polish_notation
-    sign = nil
-    @problem.each do |item|
-      item = item.to_i unless SIGNS.include? item
-      case item
-      when Integer
-        @stack_helper.push(item)
-      when *SIGNS
-        sign = item
-        eval_result = eval_math(@stack_helper.pop, sign, @stack_helper.pop)
-        @stack_helper.push(eval_result)
-      end
+    @bpn_eval_stack = []
+    back_polish_notation.each do |item|
+      bpn_algorithm(item)
     end
-    @stack_helper.first
+    @bpn_eval_stack.first
   end
 
-  def to_back_polish_notation
-    @stack_helper = []
-    result = []
-    @problem.push(STOP)
-    @stack_helper.push(STOP)
-    until @problem.empty?
-      result.push(@problem.shift) unless BPN_SIGNS.include? @problem.first
-      case search_for_instruction(@problem.first)
+  def back_polish_notation
+    # в 4 кейсе добавить @бпн = резалт и проверку, есть ли такая переменная. ретурн анлесс @бпн
+    @bpn_conversion_stack = [STOP]
+    bpn_order_stack = []
+    problem_arr = @problem.push(STOP)
+    until problem_arr.empty?
+      bpn_order_stack.push(problem_arr.shift) unless BPN_SIGNS.include? problem_arr.first
+      case search_for_bpn_instruction(problem_arr.first)
       when 1
-        @stack_helper.push(@problem.shift)
+        @bpn_conversion_stack.push(problem_arr.shift)
       when 2
-        result.push(@stack_helper.pop)
+        bpn_order_stack.push(@bpn_conversion_stack.pop)
       when 3
-        @problem.shift
-        @stack_helper.pop
+        problem_arr.shift
+        @bpn_conversion_stack.pop
       when 4
-        @problem = result
-        @stack_helper.shift
-        return @problem
+        # @back_polish_notation = @results_memo
+        return bpn_order_stack
       when 5
         return 'Syntax error'
       end
@@ -61,32 +61,30 @@ class Calculator
     input.scan(%r{(^-\d+|\d+|\+|-|\*|/|\(|\))}).flatten
   end
 
-  def eval_math(second_el, sign, first_el)
-    case sign
-    when '+'
-      first_el + second_el
-    when '-'
-      first_el - second_el
-    when '/'
-      first_el / second_el
-    when '*'
-      first_el * second_el
+  def bpn_algorithm(item)
+    item = item.to_i unless SIGNS.include? item
+    case item
+    when Integer
+      @bpn_eval_stack.push(item)
+    when *SIGNS
+      sign = item
+      eval_result = eval_math(@bpn_eval_stack.pop, sign, @bpn_eval_stack.pop)
+      @bpn_eval_stack.push(eval_result)
     end
   end
 
-  def search_for_instruction(item)
-    horisontal = ['stop', '+', '-', '*', '/', '(', ')']
-    vertical = ['stop', '+', '-', '*', '/', '(']
-    interaction_matrix = [
-      [4, 1, 1, 1, 1, 1, 5],
-      [2, 2, 2, 1, 1, 1, 2],
-      [2, 2, 2, 1, 1, 1, 2],
-      [2, 2, 2, 2, 2, 1, 2],
-      [2, 2, 2, 2, 2, 1, 2],
-      [5, 1, 1, 1, 1, 1, 3]
-    ]
-    vert_index = vertical.find_index(@stack_helper.last)
-    hor_index = horisontal.find_index(item)
-    interaction_matrix[vert_index][hor_index]
+  def eval_math(second_element, sign, first_element)
+    case sign
+    when '+' then first_element + second_element
+    when '-' then first_element - second_element
+    when '/' then first_element / second_element
+    when '*' then first_element * second_element
+    end
+  end
+
+  def search_for_bpn_instruction(item)
+    vert_index = VERT.find_index(@bpn_conversion_stack.last)
+    hor_index = HOR.find_index(item)
+    BPN_MATRIX[vert_index][hor_index]
   end
 end
