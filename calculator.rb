@@ -19,20 +19,17 @@ class Calculator
     @problem = split_problem(problem)
   end
 
-  # def results_memo
-  #   @results_memo ||= back_polish_notation
-  # end
+  def results_memo
+    @results_memo ||= solve_problem
+  end
 
   def solve_problem
     @bpn_eval_stack = []
-    back_polish_notation.each do |item|
-      bpn_algorithm(item)
-    end
+    back_polish_notation.each { |item| bpn_algorithm(item) }
     @bpn_eval_stack.first
   end
 
   def back_polish_notation
-    # в 4 кейсе добавить @бпн = резалт и проверку, есть ли такая переменная. ретурн анлесс @бпн
     @bpn_conversion_stack = [STOP]
     bpn_order_stack = []
     problem_arr = @problem.push(STOP)
@@ -47,7 +44,6 @@ class Calculator
         problem_arr.shift
         @bpn_conversion_stack.pop
       when 4
-        # @back_polish_notation = @results_memo
         return bpn_order_stack
       when 5
         return 'Syntax error'
