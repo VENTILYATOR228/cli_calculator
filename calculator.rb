@@ -19,20 +19,30 @@ class Calculator
     @problem = split_problem(problem)
   end
 
-  def results_memo
-    @results_memo ||= solve_problem
+  def result
+    @result ||= solve_problem
   end
 
   def solve_problem
-    @bpn_eval_stack = []
-    back_polish_notation.each { |item| bpn_algorithm(item) }
-    @bpn_eval_stack.first
+    bpn_eval_stack = []
+    back_polish_notation.each do |item|
+      item = item.to_i unless SIGNS.include? item
+      case item
+      when Integer
+        bpn_eval_stack.push(item)
+      when *SIGNS
+        sign = item
+        eval_result = eval_math(bpn_eval_stack.pop, sign, bpn_eval_stack.pop)
+        bpn_eval_stack.push(eval_result)
+      end
+    end
+    bpn_eval_stack.first
   end
 
   def back_polish_notation
     @bpn_conversion_stack = [STOP]
     bpn_order_stack = []
-    problem_arr = @problem.push(STOP)
+    problem_arr = @problem.dup.push(STOP)
     until problem_arr.empty?
       bpn_order_stack.push(problem_arr.shift) unless BPN_SIGNS.include? problem_arr.first
       case search_for_bpn_instruction(problem_arr.first)
@@ -46,7 +56,7 @@ class Calculator
       when 4
         return bpn_order_stack
       when 5
-        return 'Syntax error'
+        raise SyntaxError, 'Check your condition'
       end
     end
   end
@@ -55,18 +65,6 @@ class Calculator
 
   def split_problem(input)
     input.scan(%r{(^-\d+|\d+|\+|-|\*|/|\(|\))}).flatten
-  end
-
-  def bpn_algorithm(item)
-    item = item.to_i unless SIGNS.include? item
-    case item
-    when Integer
-      @bpn_eval_stack.push(item)
-    when *SIGNS
-      sign = item
-      eval_result = eval_math(@bpn_eval_stack.pop, sign, @bpn_eval_stack.pop)
-      @bpn_eval_stack.push(eval_result)
-    end
   end
 
   def eval_math(second_element, sign, first_element)

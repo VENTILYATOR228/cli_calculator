@@ -3,4 +3,4 @@
 require './calculator'
 
 math_problem = Calculator.new(ARGV.join)
-puts math_problem.results_memo
+puts math_problem.result
